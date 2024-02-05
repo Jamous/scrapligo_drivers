@@ -1,0 +1,47 @@
+---
+platform-type: 'ubnt_edgeswitch'
+default:
+  driver-type: 'network'
+  privilege-levels:
+    exec:
+      name: 'exec'
+      pattern: '>$'
+      previous-priv:
+      deescalate:
+      escalate:
+      escalate-auth: false
+      escalate-prompt:
+    privilege-exec:
+      name: 'privilege-exec'
+      pattern: '#$'
+      previous-priv: 'exec'
+      deescalate: 'disable'
+      escalate: 'enable'
+      escalate-auth: true
+      escalate-prompt: '(?im)^(?:enable\s){0,1}password:\s?$'
+    configuration:
+      name: 'configuration'
+      pattern: '\(Config\)\#'
+      not-contains:
+        - 'tcl)'
+      previous-priv: 'privilege-exec'
+      deescalate: 'end'
+      escalate: 'configure'
+      escalate-auth: false
+      escalate-prompt:
+  default-desired-privilege-level: 'privilege-exec'
+  failed-when-contains:
+    - '% Ambiguous command'
+    - '% Incomplete command'
+    - '% Invalid input detected'
+    - '% Unknown command'
+  textfsm-platform: 'cisco_iosxe'
+  network-on-open:
+    - operation: 'acquire-priv' # targets default desired priv by default
+    - operation: 'driver.send-command'
+      command: 'terminal length 0'
+  network-on-close:
+    - operation: 'acquire-priv'
+    - operation: 'channel.write'
+      input: 'exit'
+    - operation: 'channel.return'
