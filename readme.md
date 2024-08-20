@@ -10,6 +10,7 @@ These will need to be installed in the scrapli platform files, which can be foun
 
 ```
 %USERPROFILE%\go\pkg\mod\github.com\scrapli\scrapligo@v1.2.0\assets\platforms\
+~/go/pkg/mod/github.com/scrapli/scrapligo\@v1.2.0/assets/platforms/
 ```
 
 * fss3400crapli: For FS S3400 series switches
