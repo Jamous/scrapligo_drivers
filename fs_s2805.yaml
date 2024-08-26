@@ -1,0 +1,63 @@
+---
+platform-type: 'fs_s2805'
+default:
+  driver-type: 'network'
+  privilege-levels:
+    exec:
+      name: 'exec'
+      pattern: '>$'
+      previous-priv:
+      deescalate:
+      escalate:
+      escalate-auth: false
+      escalate-prompt: 
+    privilege-exec:
+      name: 'privilege-exec'
+      pattern: '#$'
+      previous-priv: 'exec'
+      deescalate: 'exit'
+      escalate: 'enable'
+      escalate-auth: false
+      escalate-prompt: ''
+    configuration:
+      name: 'configuration'
+      pattern: '\(config\)#'
+      not-contains:
+        - 'tcl)'
+      previous-priv: 'privilege-exec'
+      deescalate: 'exit'
+      escalate: 'configure terminal'
+      escalate-auth: false
+      escalate-prompt:
+    tclsh:
+      name: 'tclsh'
+      pattern: '(?im)^([\w.\-@/+>:]+\(tcl\)[>#]|\+>)$'
+      previous-priv: 'privilege-exec'
+      deescalate: 'tclquit'
+      escalate: 'tclsh'
+      escalate-auth: false
+      escalate-prompt:
+  default-desired-privilege-level: 'configuration'
+  failed-when-contains:
+    - '% Ambiguous command'
+    - '% Incomplete command'
+    - '% Invalid input detected'
+    - '% Unknown command'
+  textfsm-platform: 'cisco_iosxe' # ignored in go because no ntc-templates
+  network-on-open:
+    - operation: 'acquire-priv' # enter config mode
+    - operation: 'driver.send-comand' # Send command to set terminal width and
+      command: 'line width 256'
+    - operation: 'driver.send-command' # Send command to set terminal length
+      command: 'screen-rows per-page 0'
+    - operation: 'driver.send-command' # return to privilege-exec
+      command: 'exit'
+  network-on-close:
+    - operation: 'acquire-priv'
+    - operation: 'driver.send-comand'
+      command: 'configure terminal'
+    - operation: 'driver.send-command' # Send command to set terminal length
+      command: 'no screen-rows per-page'
+    - operation: 'channel.write'
+      input: 'exit'
+    - operation: 'channel.return'
