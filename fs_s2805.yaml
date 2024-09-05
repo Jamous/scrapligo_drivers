@@ -45,8 +45,10 @@ default:
     - '% Unknown command'
   textfsm-platform: 'cisco_iosxe' # ignored in go because no ntc-templates
   network-on-open:
-    - operation: 'acquire-priv' # enter config mode
-    - operation: 'driver.send-comand' # Send command to set terminal width and
+    - operation: 'acquire-priv' 
+    - operation: 'driver.send-command' # enter config mode
+      command: 'configure terminal'
+    - operation: 'driver.send-command' # Send command to set terminal width and
       command: 'line width 256'
     - operation: 'driver.send-command' # Send command to set terminal length
       command: 'screen-rows per-page 0'
@@ -54,9 +56,9 @@ default:
       command: 'exit'
   network-on-close:
     - operation: 'acquire-priv'
-    - operation: 'driver.send-comand'
+    - operation: 'driver.send-command'
       command: 'configure terminal'
-    - operation: 'driver.send-command' # Send command to set terminal length
+    - operation: 'driver.send-command' # Send command tore set terminal length
       command: 'no screen-rows per-page'
     - operation: 'channel.write'
       input: 'exit'
