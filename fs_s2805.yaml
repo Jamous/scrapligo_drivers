@@ -21,11 +21,11 @@ default:
       escalate-prompt: ''
     configuration:
       name: 'configuration'
-      pattern: '\(config\)#'
+      pattern: '.*\(config.*\)#'
       not-contains:
         - 'tcl)'
       previous-priv: 'privilege-exec'
-      deescalate: 'exit'
+      deescalate: 'end'
       escalate: 'configure terminal'
       escalate-auth: false
       escalate-prompt:
@@ -37,7 +37,7 @@ default:
       escalate: 'tclsh'
       escalate-auth: false
       escalate-prompt:
-  default-desired-privilege-level: 'configuration'
+  default-desired-privilege-level: 'privilege-exec'
   failed-when-contains:
     - '% Ambiguous command'
     - '% Incomplete command'
